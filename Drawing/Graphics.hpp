@@ -40,7 +40,7 @@ namespace OSHGui
 
 			void Rotate(const PointF &pivot, const Vector &angles);
 
-			void DrawLine(const Color &color, const PointF &from, const PointF &to);
+			void DrawLine(const Color &color, const PointF &from, const PointF &to, float thickness = 1.0f);
 			/**
 			 * Füllt das Rechteck.
 			 *
@@ -48,21 +48,21 @@ namespace OSHGui
 			 * \param origin
 			 * \param size
 			 */
-			void DrawRectangle(const Color &color, const PointF &origin, const SizeF &size);
+			void DrawRectangle(const Color &color, const PointF &origin, const SizeF &size, float rounding = 0.0f, float thickness = 1.0f);
 			/**
 			 * Füllt das Rechteck.
 			 *
 			 * \param color
 			 * \param rectangle
 			 */
-			void DrawRectangle(const Color &color, const RectangleF &rectangle);
+			void DrawRectangle(const Color &color, const RectangleF &rectangle, float rounding = 0.0f, float thickness = 1.0f);
 			/**
 			 * Füllt das Rechteck.
 			 *
 			 * \param color
 			 * \param rectangle
 			 */
-			void DrawRectangle(const Color &color, float x, float y, float width, float height);
+			void DrawRectangle(const Color &color, float x, float y, float width, float height, float rounding = 0.0f, float thickness = 1.0f);
 			/**
 			 * Füllt das Rechteck.
 			 *
@@ -70,21 +70,21 @@ namespace OSHGui
 			 * \param origin
 			 * \param size
 			 */
-			void FillRectangle(const Color &color, const PointF &origin, const SizeF &size);
+			void FillRectangle(const Color &color, const PointF &origin, const SizeF &size, float rounding = 0.0f);
 			/**
 			 * Füllt das Rechteck.
 			 *
 			 * \param color
 			 * \param rectangle
 			 */
-			void FillRectangle(const Color &color, const RectangleF &rectangle);
+			void FillRectangle(const Color &color, const RectangleF &rectangle, float rounding = 0.0f);
 			/**
 			 * Füllt das Rechteck.
 			 *
 			 * \param color
 			 * \param rectangle
 			 */
-			void FillRectangle(const Color &color, float x, float y, float width, float height);
+			void FillRectangle(const Color &color, float x, float y, float width, float height, float rounding = 0.0f);
 			/**
 			 * Füllt die Textur mit einem Farbverlauf.
 			 *
@@ -114,7 +114,7 @@ namespace OSHGui
 			 *
 			 * \param vertices
 			 */
-			void FillPolygon(const std::vector<PointF> &vertices, const Color &color);
+			void FillPolygon(const std::vector<PointF> &points, const Color &color);
 			/**
 			 * Füllt einen Kreis.
 			 *
@@ -122,7 +122,7 @@ namespace OSHGui
 			 * \param origin
 			 * \param radius
 			 */
-			void FillCircle(const Color &color, const PointF &origin, float radius);
+			void FillCircle(const Color &color, const PointF &origin, float radius, float start = 0.0f, float end = 1.0f);
 			/**
 			 * Füllt einen Kreis.
 			 *
@@ -131,7 +131,7 @@ namespace OSHGui
 			 * \param y
 			 * \param radius
 			 */
-			void FillCircle(const Color &color, float x, float y, float radius);
+			void FillCircle(const Color &color, float x, float y, float radius, float start = 0.0f, float end = 1.0f);
 			/**
 			 * Füllt eine Ellipse mit der entsprechenden Größe um den Mittelpunkt herum.
 			 *
@@ -156,6 +156,28 @@ namespace OSHGui
 			void DrawImage(const std::shared_ptr<Image> &image, const ColorRectangle &color, const RectangleF &area);
 
 			void DrawImage(const std::shared_ptr<Image> &image, const ColorRectangle &color, const RectangleF &area, const RectangleF &clip);
+
+			void DrawTriangle(const Color &color, const PointF &origin1, const PointF &origin2, const PointF &origin3);
+
+			void FillTriangle(const Color &color, const PointF &origin1, const PointF &origin2, const PointF &origin3);
+
+			void DrawTriangleGradient(const Color &color1, const Color &color2, const Color &color3, const PointF &origin1, const PointF &origin2, const PointF &origin3);
+
+			void FillTriangleGradient(const Color &color1, const Color &color2, const Color &color3, const PointF &origin1, const PointF &origin2, const PointF &origin3);
+
+			void DrawCircle(const Color &color, const PointF &origin, float radius, float thickness = 0.0f, float start = 0.0f, float end = 1.0f);
+
+			void DrawCircle(const Color &color, float x, float y, float radius, float thickness = 0.0f, float start = 0.0f, float end = 1.0f);
+
+			void FillCircleGradient(const Color &colorOut, const Color &colorIn, const PointF &origin, float radius, float start = 0.0f, float end = 1.0f);
+
+			void FillCircleGradient(const Color &colorOut, const Color &colorIn, float x, float y, float radius, float start = 0.0f, float end = 1.0f);
+
+			void DrawShadow(const Color &color, const PointF &origin, const SizeF &size, float amount);
+
+			void DrawShadow(const Color &color, const RectangleF &rectangle, float amount);
+
+			void DrawShadow(const Color &color, float x, float y, float width, float height, float amount);
 
 		private:
 			GeometryBuffer &buffer;

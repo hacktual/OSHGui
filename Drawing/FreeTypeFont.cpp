@@ -23,12 +23,14 @@ namespace OSHGui
 		//---------------------------------------------------------------------------
 		//Constructor
 		//---------------------------------------------------------------------------
-		FreeTypeFont::FreeTypeFont(const Misc::AnsiString &filename, const float _pointSize, const bool _antiAliased, const float _lineSpacing)
+		FreeTypeFont::FreeTypeFont(const Misc::AnsiString &filename, const float _pointSize, const bool _antiAliased, const Effect _effect, const float _lineSpacing)
 			: lineSpacing(_lineSpacing),
 			  pointSize(_pointSize),
 			  antiAliased(_antiAliased),
 			  fontFace(nullptr)
 		{
+			effect = _effect;
+
 			if (!freeTypeUsageCounter++)
 			{
 				FT_Init_FreeType(&freeType);
@@ -39,13 +41,15 @@ namespace OSHGui
 			UpdateFont();
 		}
 		//---------------------------------------------------------------------------
-		FreeTypeFont::FreeTypeFont(Misc::RawDataContainer _data, const float _pointSize, const bool _antiAliased, const float _lineSpacing)
+		FreeTypeFont::FreeTypeFont(Misc::RawDataContainer _data, const float _pointSize, const bool _antiAliased, const Effect _effect, const float _lineSpacing)
 			: lineSpacing(_lineSpacing),
 			  pointSize(_pointSize),
 			  antiAliased(_antiAliased),
 			  fontFace(nullptr),
 			  data(std::move(_data))
 		{
+			effect = _effect;
+
 			if (!freeTypeUsageCounter++)
 			{
 				FT_Init_FreeType(&freeType);
@@ -141,8 +145,8 @@ namespace OSHGui
 						continue;
 					}
 
-					const auto glyphWidth = static_cast<int>(std::ceil(fontFace->glyph->metrics.width * FT_PosCoefficient)) + GlyphPadding;
-					const auto glyphHeight = static_cast<int>(std::ceil(fontFace->glyph->metrics.height * FT_PosCoefficient)) + GlyphPadding;
+					const auto glyphWidth = static_cast<int>(std::ceil(fontFace->glyph->metrics.width * FT_PosCoefficient)) + GlyphPadding + static_cast<uint32_t>(effect);
+					const auto glyphHeight = static_cast<int>(std::ceil(fontFace->glyph->metrics.height * FT_PosCoefficient)) + GlyphPadding + static_cast<uint32_t>(effect);
 
 					x += glyphWidth;
 					if (x > size)
@@ -216,8 +220,8 @@ namespace OSHGui
 						}
 						else
 						{
-							const auto glyphWidth = fontFace->glyph->bitmap.width + GlyphPadding;
-							const auto glyphHeight = fontFace->glyph->bitmap.rows + GlyphPadding;
+							const auto glyphWidth = fontFace->glyph->bitmap.width + GlyphPadding + static_cast<uint32_t>(effect);
+							const auto glyphHeight = fontFace->glyph->bitmap.rows + GlyphPadding + static_cast<uint32_t>(effect);
 
 							auto next = x + glyphWidth;
 							if (next > textureSize)
@@ -267,6 +271,8 @@ namespace OSHGui
 						}
 					}
 				}
+
+				ApplyEffect(buffer.data(), textureSize, textureSize);
 
 				texture->LoadFromMemory(buffer.data(), SizeF(textureSize, textureSize), Texture::PixelFormat::RGBA);
 

@@ -10,6 +10,7 @@
 #include "../Misc/Exceptions.hpp"
 #include "../Misc/HashTuple.hpp"
 #include "FreeTypeFont.hpp"
+#include "GDIFont.hpp"
 #include <windows.h>
 #include <algorithm>
 #include <vector>
@@ -19,9 +20,9 @@ namespace OSHGui
 {
 	namespace Drawing
 	{
-		std::unordered_map<std::tuple<Misc::AnsiString, float, bool>, std::weak_ptr<Drawing::Font>> FontManager::loadedFonts;
+		std::unordered_map<std::tuple<Misc::AnsiString, float, bool, Font::Effect>, std::weak_ptr<Drawing::Font>> FontManager::loadedFonts;
 		//---------------------------------------------------------------------------
-		FontPtr FontManager::LoadFont(Misc::AnsiString name, float pointSize, bool antiAliased)
+		FontPtr FontManager::LoadFreeTypeFont(Misc::AnsiString name, float pointSize, bool antiAliased, Font::Effect effect)
 		{
 			if (name.empty())
 			{
@@ -78,7 +79,7 @@ namespace OSHGui
 
 								RegCloseKey(fontKey);
 
-								return LoadFontFromFile(path, pointSize, antiAliased);
+								return LoadFreeTypeFontFromFile(path, pointSize, antiAliased, effect);
 							}
 						}
 					}
@@ -92,22 +93,22 @@ namespace OSHGui
 			throw Misc::ArgumentException();
 		}
 		//---------------------------------------------------------------------------
-		FontPtr FontManager::LoadFontFromFile(const Misc::AnsiString &filename, float pointSize, bool antiAliased)
+		FontPtr FontManager::LoadFreeTypeFontFromFile(const Misc::AnsiString &filename, float pointSize, bool antiAliased, Font::Effect effect)
 		{
-			auto cacheEntry = std::make_tuple(filename, pointSize, antiAliased);
+			auto cacheEntry = std::make_tuple(filename, pointSize, antiAliased, effect);
 			const auto it = loadedFonts.find(cacheEntry);
 			if (it == std::end(loadedFonts) || it->second.expired())
 			{
-				auto font = std::make_shared<FreeTypeFont>(filename, pointSize, antiAliased);
+				auto font = std::make_shared<FreeTypeFont>(filename, pointSize, antiAliased, effect);
 				loadedFonts[cacheEntry] = font;
 				return font;
 			}
 			return it->second.lock();
 		}
 		//---------------------------------------------------------------------------
-		FontPtr FontManager::LoadFontFromMemory(const Misc::RawDataContainer &data, float pointSize, bool antiAliased)
+		FontPtr FontManager::LoadFreeTypeFontFromMemory(const Misc::RawDataContainer &data, float pointSize, bool antiAliased, Font::Effect effect)
 		{
-			return std::make_shared<FreeTypeFont>(data, pointSize, antiAliased);
+			return std::make_shared<FreeTypeFont>(data, pointSize, antiAliased, effect);
 		}
 		//---------------------------------------------------------------------------
 		void FontManager::DisplaySizeChanged(const SizeF &size)
@@ -116,6 +117,11 @@ namespace OSHGui
 			{
 				font.second.lock()->DisplaySizeChanged(size);
 			}
+		}
+		//---------------------------------------------------------------------------
+		FontPtr FontManager::LoadGDIFont(Misc::AnsiString name, float pointSize, bool antiAliased, Font::Effect effect)
+		{
+			return std::make_shared<GDIFont>(name, pointSize, antiAliased, effect);
 		}
 		//---------------------------------------------------------------------------
 	}

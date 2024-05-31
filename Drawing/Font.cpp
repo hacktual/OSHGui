@@ -22,7 +22,8 @@ namespace OSHGui
 			  height(0.0f),
 			  scalingHorizontal(1.0f),
 			  scalingVertical(1.0f),
-			  maximumCodepoint(0)
+			  maximumCodepoint(0),
+			  effect(Effect::NONE)
 		{
 			
 		}
@@ -75,28 +76,75 @@ namespace OSHGui
 			return pos != glyphMap.end() ? &pos->second : nullptr;
 		}
 		//---------------------------------------------------------------------------
-		float Font::GetTextExtent(const Misc::AnsiString &text, float scaleX) const
+		void Font::ApplyEffect(uint32_t* buffer, uint32_t height, uint32_t width) const
 		{
-			auto current = 0.f;
-			auto advance = 0.f;
-
-			for (auto c : text)
+			if (effect == Effect::NONE)
 			{
-				const auto glyph = GetGlyphData(static_cast<unsigned char>(c));
-				if (glyph)
-				{
-					const auto width = glyph->GetRenderedAdvance(scaleX);
-
-					if (advance + width > current)
-					{
-						current = advance + width;
-					}
-
-					advance += glyph->GetAdvance(scaleX);
-				}
+				return;
 			}
 
-			return std::max(advance, current);
+			std::vector<uint32_t> temp(height * width);
+			switch (effect)
+			{
+			case Effect::DROPSHADOW:
+				for (auto i = 0; i < height; ++i)
+				{
+					for (auto j = 0; j < width; ++j)
+					{
+						const auto alpha = static_cast<uint8_t>((buffer[i * width + j] >> 24) & 0xFF);
+						if (!alpha)
+						{
+							continue;
+						}
+
+						temp[(i + 1) * width + j + 1] = 0x00000000 | ((alpha / 2) << 24);
+						temp[i * width + j] = buffer[i * width + j];
+					}
+				}
+				break;
+			case Effect::OUTLINE:
+				for (auto i = 0; i < height; ++i)
+				{
+					for (auto j = 0; j < width; ++j)
+					{
+						const auto alpha = static_cast<uint8_t>((buffer[i * width + j] >> 24) & 0xFF);
+						if (!alpha)
+						{
+							continue;
+						}
+
+						for (auto k = -1; k < 2; ++k)
+						{
+							for (auto l = -1; l < 2; ++l)
+							{
+								temp[(i + 1 + k) * width + j + 1 + l] = 0xFF000000;
+							}
+						}
+					}
+				}
+
+				for (auto i = 0; i < height; ++i)
+				{
+					for (auto j = 0; j < width; ++j)
+					{
+						const auto alpha = static_cast<uint8_t>((buffer[i * width + j] >> 24) & 0xFF);
+						if (!alpha)
+						{
+							continue;
+						}
+
+						temp[(i + 1) * width + j + 1] = buffer[i * width + j];
+					}
+				}
+				break;
+			}
+
+			std::memcpy(buffer, temp.data(), height * sizeof(uint32_t) * width);
+		}
+		//---------------------------------------------------------------------------
+		float Font::GetTextExtent(const Misc::AnsiString &text, float scaleX) const
+		{
+			return GetTextAdvance(text, scaleX);
 		}
 		//---------------------------------------------------------------------------
 		float Font::GetTextAdvance(const Misc::AnsiString &text, float scaleX) const
@@ -145,6 +193,23 @@ namespace OSHGui
 		void Font::DisplaySizeChanged(const SizeF &size)
 		{
 			//Image::ComputeScalingFactors(size, d_nativeResolution, scalingHorizontal, scalingVertical);
+
+			UpdateFont();
+		}
+		//---------------------------------------------------------------------------
+		Font::Effect Font::GetEffect() const
+		{
+			return effect;
+		}
+		//---------------------------------------------------------------------------
+		void Font::SetEffect(const Effect _effect)
+		{
+			if (effect == _effect)
+			{
+				return;
+			}
+
+			effect = _effect;
 
 			UpdateFont();
 		}

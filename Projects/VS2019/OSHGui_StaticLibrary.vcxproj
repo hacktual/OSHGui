@@ -231,6 +231,7 @@
     <ClCompile Include="..\..\Drawing\Font.cpp" />
     <ClCompile Include="..\..\Drawing\FontManager.cpp" />
     <ClCompile Include="..\..\Drawing\FreeTypeFont.cpp" />
+    <ClCompile Include="..\..\Drawing\GDIFont.cpp" />
     <ClCompile Include="..\..\Drawing\GeometryBuffer.cpp" />
     <ClCompile Include="..\..\Drawing\Graphics.cpp" />
     <ClCompile Include="..\..\Drawing\Image.cpp" />
@@ -512,6 +513,7 @@
     <ClInclude Include="..\..\Drawing\FontGlyph.hpp" />
     <ClInclude Include="..\..\Drawing\FontManager.hpp" />
     <ClInclude Include="..\..\Drawing\FreeTypeFont.hpp" />
+    <ClInclude Include="..\..\Drawing\GDIFont.hpp" />
     <ClInclude Include="..\..\Drawing\GeometryBuffer.hpp" />
     <ClInclude Include="..\..\Drawing\Graphics.hpp" />
     <ClInclude Include="..\..\Drawing\Image.hpp" />

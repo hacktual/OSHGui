@@ -76,9 +76,9 @@ namespace OSHGui
 				report for this font, regardless of what is mentioned in the font file
 				itself.
 			*/
-			FreeTypeFont(const Misc::AnsiString &filename, const float pointSize, const bool antiAliased, const float lineSpacing = 0.0f);
+			FreeTypeFont(const Misc::AnsiString &filename, const float pointSize, const bool antiAliased, const Effect effect, const float lineSpacing = 0.0f);
 
-			FreeTypeFont(Misc::RawDataContainer data, const float pointSize, const bool antiAliased, const float lineSpacing = 0.0f);
+			FreeTypeFont(Misc::RawDataContainer data, const float pointSize, const bool antiAliased, const Effect effect, const float lineSpacing = 0.0f);
 
 			//! Destructor.
 			~FreeTypeFont();

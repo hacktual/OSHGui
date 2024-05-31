@@ -341,6 +341,9 @@
     <ClCompile Include="..\..\Input\WindowsMessageThreaded.cpp">
       <Filter>Source Files\Input</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Drawing\GDIFont.cpp">
+      <Filter>Source Files\Drawing</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Misc\ConcurrendQueue.hpp">
@@ -702,6 +705,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Input\WindowsMessageThreaded.hpp">
       <Filter>Header Files\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Drawing\GDIFont.hpp">
+      <Filter>Header Files\Drawing</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

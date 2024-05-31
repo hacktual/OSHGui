@@ -29,6 +29,13 @@ namespace OSHGui
 		class OSHGUI_EXPORT Font
 		{
 		public:
+			enum Effect
+			{
+				NONE,
+				DROPSHADOW,
+				OUTLINE
+			};
+
 			/**
 			 * Destruktor.
 			 */
@@ -151,6 +158,10 @@ namespace OSHGui
 			*/
 			void DisplaySizeChanged(const SizeF &size);
 
+			Effect GetEffect() const;
+
+			void SetEffect(const Effect effect);
+
 		protected:
 			/**
 			 * Konstruktor der Klasse.
@@ -183,6 +194,8 @@ namespace OSHGui
 			 */
 			virtual const FontGlyph* FindFontGlyph(const uint32_t codepoint) const;
 
+			void ApplyEffect(uint32_t* buffer, uint32_t height, uint32_t width) const;
+
 			float ascender;
 			float descender;
 			float height;
@@ -197,6 +210,8 @@ namespace OSHGui
 			typedef std::map<uint32_t, FontGlyph> CodepointMap;
 			typedef CodepointMap::iterator CodepointIterator;
 			mutable CodepointMap glyphMap;
+
+			Effect effect;
 		};
 
 		typedef std::shared_ptr<Font> FontPtr;

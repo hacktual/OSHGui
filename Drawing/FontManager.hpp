@@ -32,7 +32,7 @@ namespace OSHGui
 			 * \param antiAliased Legt fest, ob AntiAliasing verwendet werden soll
 			 * \return Die geladene Schriftart oder nullptr, falls die Schriftart nicht gefunden wird.
 			 */
-			static FontPtr LoadFont(Misc::AnsiString name, float pointSize, bool antiAliased);
+			static FontPtr LoadFreeTypeFont(Misc::AnsiString name, float pointSize, bool antiAliased, Font::Effect effect = Font::Effect::NONE);
 			/**
 			 * Lädt die Schriftart aus der angegebenen Datei.
 			 *
@@ -41,8 +41,8 @@ namespace OSHGui
 			 * \param antiAliased Legt fest, ob AntiAliasing verwendet werden soll
 			 * \return Die geladene Schriftart oder nullptr, falls die Schriftart nicht gefunden wird.
 			 */
-			static FontPtr LoadFontFromFile(const Misc::AnsiString &file, float pointSize, bool antiAliased);
-			static FontPtr LoadFontFromMemory(const Misc::RawDataContainer &data, float pointSize, bool antiAliased);
+			static FontPtr LoadFreeTypeFontFromFile(const Misc::AnsiString &file, float pointSize, bool antiAliased, Font::Effect effect = Font::Effect::NONE);
+			static FontPtr LoadFreeTypeFontFromMemory(const Misc::RawDataContainer &data, float pointSize, bool antiAliased, Font::Effect effect = Font::Effect::NONE);
 
 			/**
 			* Legt die Display-Größe fest.
@@ -51,8 +51,10 @@ namespace OSHGui
 			*/
 			static void DisplaySizeChanged(const SizeF &size);
 
+			static FontPtr LoadGDIFont(Misc::AnsiString name, float pointSize, bool antiAliased, Font::Effect effect = Font::Effect::NONE);
+
 		private:
-			static std::unordered_map<std::tuple<Misc::AnsiString, float, bool>, std::weak_ptr<Drawing::Font>> loadedFonts;
+			static std::unordered_map<std::tuple<Misc::AnsiString, float, bool, Font::Effect>, std::weak_ptr<Drawing::Font>> loadedFonts;
 		};
 	}
 }

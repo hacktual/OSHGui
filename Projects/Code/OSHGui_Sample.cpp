@@ -29,7 +29,7 @@ void InitializeOSHGui(LPDIRECT3DDEVICE9 device)
 	auto &app = Application::Instance();
 
 	// 3. create a font which will be used by the OSHGui
-	const auto font = FontManager::LoadFont("Arial", 8.0f, false); //Arial, 8PT, no anti-aliasing
+	const auto font = FontManager::LoadFreeTypeFont("Arial", 8.0f, false); //Arial, 8PT, no anti-aliasing
 	app.SetDefaultFont(font);
 
 	// 4. create our form
